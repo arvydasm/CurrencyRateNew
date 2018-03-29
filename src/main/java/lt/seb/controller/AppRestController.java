@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Node;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -68,8 +69,12 @@ public class AppRestController {
                 }
             });
 
-            Collections
-                    .sort(currentList, (item1, item2) -> item1.getChangeRate().compareTo(item2.getChangeRate()));
+            Comparator<ExchangeRates.Item> itemsComparator = Comparator.comparing(ExchangeRates.Item::getChangeRate);
+            Comparator<ExchangeRates.Item> itemsComparatorReversed = itemsComparator.reversed();
+            Collections.sort(currentList, itemsComparatorReversed);
+
+            //Collections
+            //        .sort(currentList, (item1, item2) -> item1.getChangeRate().compareTo(item2.getChangeRate()));
 
             return currentList;
 
