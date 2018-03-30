@@ -30,8 +30,9 @@ import javax.xml.bind.annotation.XmlType;
  *                   &lt;element name="currency" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                   &lt;element name="quantity" type="{http://www.w3.org/2001/XMLSchema}decimal"/>
  *                   &lt;element name="rate" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
- *                   &lt;element name="changeRate" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
  *                   &lt;element name="unit" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                   &lt;element name="changeRateUnit" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
+ *                   &lt;element name="changeRatePercentage" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -98,8 +99,9 @@ public class ExchangeRates {
      *         &lt;element name="currency" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *         &lt;element name="quantity" type="{http://www.w3.org/2001/XMLSchema}decimal"/>
      *         &lt;element name="rate" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
-     *         &lt;element name="changeRate" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
      *         &lt;element name="unit" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *         &lt;element name="changeRateUnit" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
+     *         &lt;element name="changeRatePercentage" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -114,8 +116,9 @@ public class ExchangeRates {
         "currency",
         "quantity",
         "rate",
-        "changeRate",
-        "unit"
+        "unit",
+        "changeRateUnit",
+        "changeRatePercentage"
     })
     public static class Item {
 
@@ -126,9 +129,10 @@ public class ExchangeRates {
         @XmlElement(required = true)
         protected BigDecimal quantity;
         protected BigDecimal rate;
-        protected BigDecimal changeRate;
         @XmlElement(required = true)
         protected String unit;
+        protected BigDecimal changeRateUnit;
+        protected BigDecimal changeRatePercentage;
 
         /**
          * Gets the value of the date property.
@@ -227,30 +231,6 @@ public class ExchangeRates {
         }
 
         /**
-         * Gets the value of the changeRate property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link BigDecimal }
-         *     
-         */
-        public BigDecimal getChangeRate() {
-            return changeRate;
-        }
-
-        /**
-         * Sets the value of the changeRate property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link BigDecimal }
-         *     
-         */
-        public void setChangeRate(BigDecimal value) {
-            this.changeRate = value;
-        }
-
-        /**
          * Gets the value of the unit property.
          * 
          * @return
@@ -272,6 +252,54 @@ public class ExchangeRates {
          */
         public void setUnit(String value) {
             this.unit = value;
+        }
+
+        /**
+         * Gets the value of the changeRateUnit property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link BigDecimal }
+         *     
+         */
+        public BigDecimal getChangeRateUnit() {
+            return changeRateUnit;
+        }
+
+        /**
+         * Sets the value of the changeRateUnit property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link BigDecimal }
+         *     
+         */
+        public void setChangeRateUnit(BigDecimal value) {
+            this.changeRateUnit = value;
+        }
+
+        /**
+         * Gets the value of the changeRatePercentage property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link BigDecimal }
+         *     
+         */
+        public BigDecimal getChangeRatePercentage() {
+            return changeRatePercentage;
+        }
+
+        /**
+         * Sets the value of the changeRatePercentage property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link BigDecimal }
+         *     
+         */
+        public void setChangeRatePercentage(BigDecimal value) {
+            this.changeRatePercentage = value;
         }
 
     }

@@ -1,10 +1,13 @@
 package lt.seb.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+@Component
 public class DateValidator {
     public static final String minDateString = "1993-06-25";
     public static final String maxDateString = "2014-12-31";

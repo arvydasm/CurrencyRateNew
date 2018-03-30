@@ -31,17 +31,21 @@
             </div>
         </div>
         <div class="row">
-            <div class='col-sm-2'>
+            <div class='col-sm-6'>
                 <div class="form-group">
-                    <div class='input-group date' id='datetimepicker1'>
-                        <input type='text' id="date-field" class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                    <div class="input-group mb-3" style="margin-bottom: 10px;">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' id="date-field" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" onclick="getRates();">   Get Currencies Rates   </button>
+                            </span>
+                        </div>
                     </div>
-                    <p class="bg-danger" style="display: none"></p>
-
-                    <button type="button" class="btn btn-primary" onclick="getRates();">   Get Currencies Rates   </button>
+                    <div id="date-field-error" class="alert alert-danger" role="alert" style="display: none;"></div>
+                    <div id="date-field-warning" class="alert alert-warning" role="alert" style="display: none"></div>
                 </div>
             </div>            
         </div>
@@ -53,9 +57,10 @@
                 <tr>
                     <th>Currency</th>
                     <th>Rate</th>
-                    <th>Change Rate</th>
                     <th>Quantity</th>
                     <th>Unit</th>
+                    <th>Change Rate Unit</th>
+                    <th>Change Rate %</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -72,22 +77,27 @@
 
             dataTable = $('#currencies').DataTable( {
                 ordering:  false,
+                searchable: false,
                 pagingType: "numbers",
                 columns: [
                     { "data": "currency" },
                     { "data": "rate" },
-                    { "data": "changeRate" },
                     { "data": "quantity" },
-                    { "data": "unit" }
+                    { "data": "unit" },
+                    { "data": "changeRateUnit" },
+                    { "data": "changeRatePercentage" }
                 ]
             });
         });
         
         function getRates() {
+            $('#date-field-error').hide();
+            $('#date-field-warning').hide();
 
             var date = $('#date-field').val();
-            if (date.length < 0) {
-                $('#date-field-error').text( "Select date first!" ).show();
+
+            if (date.length <= 0) {
+                $('#date-field-warning').text( "Select date first!" ).show();
                 return;
             }
 
@@ -98,13 +108,19 @@
                 success: function(data) {
                     dataTable.clear();
 
+                    if (data.length == 0) {
+                        $('#date-field-warning').text( "No data found!" ).show();
+                        return;
+                    }
+
                     $.each(data, function( index, currency ) {
                         dataTable.row.add( {
                             "currency": currency.currency,
                             "rate":   currency.rate,
-                            "changeRate": currency.changeRate,
                             "quantity": currency.quantity,
-                            "unit": currency.unit
+                            "unit": currency.unit,
+                            "changeRateUnit": currency.changeRateUnit,
+                            "changeRatePercentage": currency.changeRatePercentage + " %"
                         })
                     });
 
@@ -114,9 +130,9 @@
                 error: function (request, status, error) {
                     if (request.responseText.length > 0) {
                         var err = eval("(" + request.responseText + ")");
-                        alert(err.message);
+                        $('#date-field-error').text(err.message).show();
                     } else {
-                        alert(request.responseText);
+                        $('#date-field-error').text(request.responseText).show();
                     }
                 }
             });

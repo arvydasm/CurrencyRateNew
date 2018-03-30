@@ -16,8 +16,4 @@ public class AppConfig {
         return client;
     }
 
-    @Bean
-    public DateValidator dateValidator() {
-        return new DateValidator();
-    }
 }
