@@ -1,7 +1,7 @@
 package lt.seb.service;
 
 import lt.seb.exception.AppException;
-import lt.seb.model.ExchangeRates.Item;
+import lt.seb.ws.ExchangeRates.Item;
 import lt.seb.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
