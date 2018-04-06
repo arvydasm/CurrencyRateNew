@@ -1,5 +1,7 @@
 package lt.seb.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -8,7 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Component
-public class DateValidator {
+public class DateUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
+
     public static final String minDateString = "1993-06-25";
     public static final String maxDateString = "2014-12-31";
     public static final String dateFormat = "yyyy-MM-dd";

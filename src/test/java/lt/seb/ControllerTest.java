@@ -28,7 +28,7 @@ public class ControllerTest {
 
 
     @Test
-    public void test() throws Exception {
+    public void testWrongDate_1() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/getRatesByDate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2014-12-11")
@@ -37,7 +37,7 @@ public class ControllerTest {
     }
 
     @Test(expected = Exception.class)
-    public void test2() throws Exception {
+    public void testWrongDate_2() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/getRatesByDate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2015-01-01")
@@ -45,7 +45,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void test3() throws Exception {
+    public void testCorrectRequest() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/getRatesByDate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2014-11-11")

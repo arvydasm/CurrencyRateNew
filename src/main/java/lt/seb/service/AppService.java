@@ -1,15 +1,12 @@
 package lt.seb.service;
 
-import lt.seb.model.ExchangeRates;
-import lt.seb.utils.DateValidator;
-import lt.seb.utils.Utils;
-import lt.seb.ws.ExchangeRatesSoap;
-import lt.seb.ws.GetExchangeRatesByDateResponse;
+import lt.seb.exception.AppException;
+import lt.seb.model.ExchangeRates.Item;
+import lt.seb.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
 
 import java.math.RoundingMode;
 import java.util.Collections;
@@ -22,41 +19,30 @@ public class AppService {
     private static Logger logger = LoggerFactory.getLogger(AppService.class);
 
     @Autowired
-    private ExchangeRatesSoap soapClient;
+    private ExchangeRatesSoapClient serviceClient;
 
     @Autowired
-    private DateValidator dateValidator;
+    private DateUtils dateUtils;
 
-    public List<ExchangeRates.Item> getCurrencyRatesItems(String date) throws Exception {
+    public List<Item> getCurrencyRatesItems(String date) throws AppException {
         try {
-            //getting results from WS
-            GetExchangeRatesByDateResponse.GetExchangeRatesByDateResult list = soapClient.getExchangeRatesByDate(date);
 
-            //checking has server returned data
-            if (list == null || list.getContent() == null || list.getContent().isEmpty()) {
-                throw new Exception("No data for date - " + date);
+            List<Item> currentList = serviceClient.getExchangeRates(date);
+            if (currentList == null) {
+                throw new AppException("No currency data, for date - " + date);
             }
+            //get date - 1
+            String dateBefore = dateUtils.getDateBefore(date);
+            List<Item> dayBeforeList = serviceClient.getExchangeRates(dateBefore);
 
-            ExchangeRates exchangeRates = Utils.unmarshaller((Node) list.getContent().get(0));
-            List<ExchangeRates.Item> currentList = exchangeRates.getItem();
-
-            //get date-1
-            String dateBefore = dateValidator.getDateBefore(date);
-
-            //get new currency data
-            list = soapClient.getExchangeRatesByDate(dateBefore);
-
-            //if date before list is empty returning first list
-            if (list == null || list.getContent() == null || list.getContent().isEmpty()) {
+            // day before may be empty
+            if (dayBeforeList == null) {
                 return currentList;
             }
 
-            exchangeRates = Utils.unmarshaller((Node) list.getContent().get(0));
-            List<ExchangeRates.Item> dayBeforeList = exchangeRates.getItem();
-
             //calculate exchange rate for each currency
             currentList.forEach(item -> {
-                ExchangeRates.Item i = dayBeforeList
+                Item i = dayBeforeList
                         .stream()
                         .filter(item1 -> item1.getCurrency().equals(item.getCurrency()))
                         .findFirst().get();
@@ -69,14 +55,16 @@ public class AppService {
             //Collections.sort(currentList, (item1, item2) -> item1.getChangeRate().compareTo(item2.getChangeRate()));
             //Collections.reverse(currentList);
 
-            Comparator<ExchangeRates.Item> itemsComparator = Comparator.comparing(ExchangeRates.Item::getChangeRateUnit);
-            Comparator<ExchangeRates.Item> itemsComparatorReversed = itemsComparator.reversed();
+            Comparator<Item> itemsComparator = Comparator.comparing(Item::getChangeRateUnit);
+            Comparator<Item> itemsComparatorReversed = itemsComparator.reversed();
             Collections.sort(currentList, itemsComparatorReversed);
 
             return currentList;
         } catch (Exception e) {
             logger.error("getCurrencyRatesItems error", e);
-            throw new Exception(e.getMessage());
+            throw new AppException(e.getMessage());
         }
     }
+
+
 }
